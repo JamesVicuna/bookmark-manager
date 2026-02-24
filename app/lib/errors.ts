@@ -33,7 +33,7 @@ export class ValidationError extends ApiError{
 }
 
 export class UnauthorizedError extends ApiError{
-   constructor(message: "Authorization required") {
+   constructor(message = "Authorization required") {
       super("UNAUTHORIZED", message, 401)
    }
 }

@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" data-theme="cupcake">
+      <html lang="en" data-theme="mytheme">
         <body
           className={`antialiased`}
         >

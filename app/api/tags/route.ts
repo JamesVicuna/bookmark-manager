@@ -1,23 +1,34 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createSupabaseClient } from "@/app/lib/supabase";
-import { auth } from "@clerk/nextjs/server";
+import { NextResponse, NextRequest } from "next/server";
 import { getAuthenticatedService } from "@/app/lib/with-service";
-import { BookmarkInsert } from "@/app/types/bookmarks";
+import { handleError } from "@/app/lib/api-response";
+import { Tag, TagInsert } from "@/app/types/bookmarks";
 
-export async function POST(req: NextRequest) {
-  const bookmarkData: BookmarkInsert = await req.json();
-
-  const { bookmarkService } = await getAuthenticatedService();
-
+export async function GET() {
+  // get all the tags
   try {
-    // const bookmark = await bookmarkService.createBookmark(bookmarkData)
-    const bookmark = await bookmarkService.editBookmark(
-      "37809582-99ef-4012-a6be-eb202a6376ef",
-      { url: "this is an update to url", title: "new title update" },
-    );
+    const { bookmarkService } = await getAuthenticatedService();
 
-    return NextResponse.json(bookmark);
+    const tags = await bookmarkService.getAllTags();
+
+    return NextResponse.json(tags);
   } catch (error) {
-    return NextResponse.json({ message: "error occurred" });
+    handleError(error);
   }
 }
+
+export async function POST(request: NextRequest) {
+  try {
+    const { bookmarkService } = await getAuthenticatedService();
+    const data: TagInsert = await request.json();
+
+    const tag = await bookmarkService.createTag(data);
+
+    console.log(tag)
+
+    return NextResponse.json(tag);
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function DELETE() {}

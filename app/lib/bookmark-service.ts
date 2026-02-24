@@ -14,9 +14,26 @@ export class BookmarkService {
     return new BookmarkService(supabase);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mapBookmarkFromDatbase(data: any): Bookmark {
+    return {
+      id: data.id,
+      user_id: data.user_id,
+      title: data.title,
+      url: data.url,
+      favicon: data.favicon,
+      description: data.description,
+      pinned: data.pinned,
+      is_archived: data.is_archived,
+      visit_count: data.visit_count,
+      created_at: data.created_at,
+      last_visited: data.visited_at,
+    };
+  }
+
   async createBookmark(
     bookmark: BookmarkInsert,
-    tags?: string[],
+    tags?: Tag[],
   ): Promise<Bookmark> {
     const { data, error } = await this.supabase
       .from("bookmarks")
@@ -34,16 +51,18 @@ export class BookmarkService {
   }
 
   async createTag(tag: TagInsert) {
-    const { error } = await this.supabase
+    const { data, error } = await this.supabase
       .from("tags")
       .insert(tag)
       .select()
       .single();
 
     if (error) throw new DatabaseError(error.message);
+
+    return data as Tag;
   }
 
-  async getTags(): Promise<Tag[]> {
+  async getAllTags(): Promise<Tag[]> {
     const { data, error } = await this.supabase.from("tags").select("*");
 
     if (error) throw new DatabaseError(error.message);
@@ -57,33 +76,72 @@ export class BookmarkService {
     if (error) throw new DatabaseError(error.message);
   }
 
-  async getBookmark(id: string): Promise<Bookmark> {
+  async getBookmarkWithTags(id: string): Promise<Bookmark> {
     const { data, error } = await this.supabase
       .from("bookmarks")
-      .select("*")
+      .select(
+        `
+         *,
+         bookmark_tags(
+            tag: tags(*)
+         )
+         `,
+      )
       .eq("id", id)
       .single();
 
     if (error) throw new DatabaseError(error.message);
 
-    return data as Bookmark;
+    return {
+      ...data,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      tags: data.bookmark_tags.map((tag: any) => tag.tag),
+    } as Bookmark;
+  }
+
+  async getAllBookmarksWithTags() {
+    const { data, error } = await this.supabase.from("bookmarks").select(
+      `*,
+      bookmark_tags(
+         tag: tags(*)
+      )
+      `,
+    );
+
+    if (error) return new DatabaseError(error.message);
+
+    
+    return data.map(bookmark => ({
+      ...this.mapBookmarkFromDatbase(bookmark),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      tags: bookmark.bookmark_tags.map((bookmark_tag: any) => bookmark_tag.tag)
+    }))
   }
 
   async getAllBookmarks(): Promise<Bookmark[]> {
     const { data, error } = await this.supabase
       .from("bookmarks")
       .select("*")
-      .order("createdAt", { ascending: true });
+      .order("created_at", { ascending: true });
 
     if (error) throw new DatabaseError(error.message);
 
     return data as Bookmark[];
   }
 
-  async postBookmarkTags(bookmarkId: string[], tagIds: string[]) {
+  async getBookmarkTags(bookmarkId: string) {
+    const { data, error } = await this.supabase
+      .from("bookmark_tags")
+      .select("*")
+      .eq("bookmark_id", bookmarkId);
+
+    if (error) throw new DatabaseError(error.message);
+  }
+
+  async postBookmarkTags(bookmarkId: string[], tags: Tag[]) {
     const { error } = await this.supabase.from("bookmark_tags").insert(
-      tagIds.map((tagId) => ({
-        tag_id: tagId,
+      tags.map((tag) => ({
+        tag_id: tag.id,
         bookmark_id: bookmarkId,
       })),
     );

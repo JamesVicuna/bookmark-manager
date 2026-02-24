@@ -12,6 +12,7 @@ export type Bookmark = {
    visit_count?: boolean,
    created_at?: string,
    last_visited?: string,
+   tags?: Tag[]
 }
 
 export type BookmarkInsert = Pick<Bookmark, "user_id" | "title" | "url" | "favicon" | "description">
