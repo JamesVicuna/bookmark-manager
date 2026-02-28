@@ -9,6 +9,7 @@ import {
   UserAvatar,
 } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
+import { BookmarkCard } from "./components/BookmarkCard";
 
 const bookmark: Bookmark = {
   title: "New test",
@@ -96,7 +97,14 @@ export default function Home() {
         <UserAvatar />
         <SignOutButton>Sign out here</SignOutButton>
       </SignedIn>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 w-3/4">
+        <div className=" grid grid-cols-3 gap-8">
+        <BookmarkCard />
+        <BookmarkCard />
+        <BookmarkCard />
+          
+
+        </div>
         <div>
           <h1>Tags</h1>
           <div>

@@ -9,7 +9,7 @@ export type Bookmark = {
    description: string,
    pinned?: boolean,
    is_archived?: boolean,
-   visit_count?: boolean,
+   visit_count?: number,
    created_at?: string,
    last_visited?: string,
    tags?: Tag[]
