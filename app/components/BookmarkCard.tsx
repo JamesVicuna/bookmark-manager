@@ -1,29 +1,134 @@
+"use client";
 import Image from "next/image";
 import { Bookmark } from "../types/bookmarks";
 import favicon from "@/public/images/favicon-32x32.png";
+import { url } from "inspector";
+import { useState, SetStateAction, Dispatch } from "react";
+import axios from "axios";
 
-const bookmark: Bookmark = {
-  title: "hello",
-  url: "string",
-  description:
-    "This is the decription of the bookmark. there will be a good amount of content in her. I have alot to say about this bookmark. Lots and lots of texzt in here",
-  created_at: "Jan 15",
-  last_visited: "Feb 27",
-  visit_count: 27,
-  tags: [
-    {
-      title: "string",
-    },
-    {
-      title: "string",
-    },
-    {
-      title: "string",
-    },
-  ],
+// const bookmark: Bookmark = {
+//   title: "hello",
+//   url: "string",
+//   description:
+//     "This is the decription of the bookmark. there will be a good amount of content in her. I have alot to say about this bookmark. Lots and lots of texzt in here",
+//   created_at: "Jan 15",
+//   last_visited: "Feb 27",
+//   visit_count: 27,
+//   tags: [
+//     {
+//       title: "string",
+//     },
+//     {
+//       title: "string",
+//     },
+//     {
+//       title: "string",
+//     },
+//   ],
+// };
+
+type DropdownItem<T> = {
+  title: string | ((context: T) => string);
+  svg: string;
+  onClick: (context: T) => void;
 };
+const dropdownItems: DropdownItem<{
+  id: string;
+  url: string;
+  pinned: boolean;
+  bookmark: Bookmark;
+  setBookmark: Dispatch<SetStateAction<Bookmark>>;
+}>[] = [
+  {
+    title: "Vist",
+    svg: "/images/icon-visit.svg",
+    onClick: async ({ url, setBookmark, id, bookmark }) => {
+      // update visit count + 1
+      try {
+        const res = await axios.patch(`/api/bookmarks/${id}`, {
+          visit_count: bookmark.visit_count + 1,
+        });
 
-export const BookmarkCard = () => {
+        const updatedBookmark: Bookmark = res.data;
+
+        setBookmark(updatedBookmark);
+      } catch (error) {
+        // TODO - apply a toast here if there is an error
+        console.log("error adding bookmark to visit count");
+      }
+
+      // open in new window
+      window.open(url, "_blank", "noopener,noreferrer");
+    },
+  },
+  {
+    title: "Copy URL",
+    svg: "/images/icon-copy.svg",
+    onClick: ({ url }) => {
+      navigator.clipboard.writeText(url);
+    },
+  },
+  {
+    title: ({ pinned }) => (pinned ? "Pin" : "Unpin"),
+    svg: "/images/icon-unpin.svg",
+    onClick: async ({ id, pinned, bookmark, setBookmark }) => {
+      // Set a query to database to pin / unpin
+      try {
+        const res = await axios.patch(`/api/bookmarks/${id}`, {
+          pinned: !pinned,
+        });
+
+        const updatedBookmark: Bookmark = res.data;
+        setBookmark(updatedBookmark);
+      } catch (error) {
+        // TODO - create a toast that shows successfull
+        console.log("Error pinning / the bookmark");
+      }
+    },
+  },
+  {
+    title: "Edit",
+    svg: "/images/icon-edit.svg",
+    onClick: ({ id }) => {
+      // Open up the edit bookmark modal and send a query to the database to update
+      // TODO - after creating the edit bookmark modal edit this
+    },
+  },
+  {
+    title: "Archive",
+    svg: "/images/icon-archive.svg",
+    onClick: async ({ id, setBookmark, bookmark }) => {
+      // Set a query to database to archive the blog
+      try {
+        const res = await axios.post(`/api/bookmarks/${id}`, {
+          is_archived: !bookmark.is_archived,
+        });
+
+        const updatedBookmark: Bookmark = res.data;
+        setBookmark(updatedBookmark);
+      } catch (error) {
+        // TODO - have a toast that shows the bookmark was archived
+        console.log("error archving the bookmark");
+      }
+    },
+  },
+];
+
+export const BookmarkCard = ({
+  bookmark,
+  setBookmark,
+}: {
+  bookmark: Bookmark;
+  setBookmark: Dispatch<SetStateAction<Bookmark>>;
+}) => {
+  const context = {
+    id: bookmark.id,
+    url: bookmark.url,
+    pinned: bookmark.pinned,
+    bookmark,
+    setBookmark,
+  };
+
   return (
     <div className="card bg-red-50">
       <div id="header+body" className="p-4">
@@ -64,12 +169,27 @@ export const BookmarkCard = () => {
               tabIndex={-1}
               className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
             >
-              <li>
-                <a>Item 1</a>
-              </li>
-              <li>
-                <a>Item 2</a>
-              </li>
+              {dropdownItems.map((item) => {
+                const resolvedTitle =
+                  typeof item.title === "string"
+                    ? item.title
+                    : item.title(context);
+
+                return (
+                  <li key={item.title + bookmark.title}>
+                    <button className="flex gap-2">
+                      <Image
+                        src={item.svg}
+                        className=" rounded-xl border border-base-300 h-full w-auto p-1"
+                        alt={resolvedTitle}
+                        height={16}
+                        width={16}
+                      />
+                      <span>{resolvedTitle}</span>
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Navbar } from "./components/Navbar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,10 +16,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" data-theme="mytheme">
-        <body
-          className={`antialiased`}
-        >
-          {children}
+        <body className={`antialiased bg-base-200`}>
+          <Navbar>
+            <div className="mx-8 mt-8">{children}</div>
+          </Navbar>
         </body>
       </html>
     </ClerkProvider>

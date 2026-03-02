@@ -1,17 +1,17 @@
 
 
 export type Bookmark = {
-   id?: string,
-   user_id?: string,
+   id: string,
+   user_id: string,
    title: string,
-   url?: string,
+   url: string,
    favicon?: string,
    description: string,
-   pinned?: boolean,
-   is_archived?: boolean,
-   visit_count?: number,
-   created_at?: string,
-   last_visited?: string,
+   pinned: boolean,
+   is_archived: boolean,
+   visit_count: number,
+   created_at: string,
+   last_visited: string,
    tags?: Tag[]
 }
 

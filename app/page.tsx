@@ -11,15 +11,15 @@ import {
 import { useEffect, useState } from "react";
 import { BookmarkCard } from "./components/BookmarkCard";
 
-const bookmark: Bookmark = {
-  title: "New test",
-  description: "test",
-};
+// const bookmark: Bookmark = {
+//   title: "New test",
+//   description: "test",
+// };
 
-const bookmarkTest: BookmarkInsert = {
-  title: "TESTING HERE",
-  description: "I WILL PUT TAGS WITH THIS ONE",
-};
+// const bookmarkTest: BookmarkInsert = {
+//   title: "TESTING HERE",
+//   description: "I WILL PUT TAGS WITH THIS ONE",
+// };
 
 export default function Home() {
   const [tag, setTag] = useState<string>();
@@ -75,20 +75,20 @@ export default function Home() {
     }
   };
 
-  const handleBookmark = async () => {
-    try {
-      const data = {
-        bookmarkInsert: bookmarkTest,
-        tags: tags,
-      };
+  // const handleBookmark = async () => {
+  //   try {
+  //     const data = {
+  //       bookmarkInsert: bookmarkTest,
+  //       tags: tags,
+  //     };
 
-      const res = await axios.post("/api/bookmarks", data);
+  //     const res = await axios.post("/api/bookmarks", data);
 
-      console.log(res.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //     console.log(res.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
     <div>
@@ -99,10 +99,10 @@ export default function Home() {
       </SignedIn>
       <div className="flex flex-col gap-4 w-3/4">
         <div className=" grid grid-cols-3 gap-8">
+        {/* <BookmarkCard />
         <BookmarkCard />
         <BookmarkCard />
-        <BookmarkCard />
-          
+           */}
 
         </div>
         <div>
@@ -122,7 +122,7 @@ export default function Home() {
           <button>Upload tag</button>
         </div>
 
-        <div>
+        {/* <div>
           <h1>Bookmarks</h1>
           <button onClick={handleBookmark}>Upload Bookmark</button>
           {bookmarks.map((bookmark) => {
@@ -138,7 +138,7 @@ export default function Home() {
               </div>
             );
           })}
-        </div>
+        </div> */}
       </div>
     </div>
   );

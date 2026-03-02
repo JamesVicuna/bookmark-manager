@@ -26,7 +26,7 @@ export async function PATCH(
   try {
     const { bookmarkService } = await getAuthenticatedService();
     const { id } = await params;
-    const data: Omit<Partial<Bookmark>, "created_at" | "user_id" | "id"> = await request.json();
+    const data: Omit<Partial<Bookmark>, "created_at" | "user_id" | "id" | "visit_count"> = await request.json();
 
     const bookmark = await bookmarkService.editBookmark(id, data);
 
