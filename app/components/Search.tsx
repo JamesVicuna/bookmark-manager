@@ -5,7 +5,7 @@ export const Search = () => {
   const [search, setSearch] = useState<string>("");
 
   return (
-    <label className="input max-w-80 w-full">
+    <label className="input max-w-80 w-full outline-none">
       <svg
         className="h-[1em] opacity-50"
         xmlns="http://www.w3.org/2000/svg"

@@ -1,3 +1,4 @@
+@config "./../tailwind.config.ts";
 @import "tailwindcss";
 @plugin "daisyui" {
   themes:
@@ -22,11 +23,13 @@
   --color-base-content-200: #4c5c59;
   --color-base-content-200-focused: #051513;
   --color-primary: #014745;
-  --color-primary-content: #fff ;--color-secondary: oklch(70% 0.25 200);
+  --color-primary-content: #fff;
+  --color-secondary: oklch(70% 0.25 200);
   --color-primary-focused: #013c3b;
   --color-secondary-content: oklch(98% 0.01 200);
   --color-accent: #dde9e7;
   --color-accent-content: #4c5c59;
+  --color-accent-focused: #ff0000;
   --color-neutral: #e8f0ef;
   --color-neutral-content: oklch(98% 0.01 240);
   --color-info: oklch(70% 0.2 220);
