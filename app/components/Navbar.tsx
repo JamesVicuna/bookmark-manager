@@ -1,10 +1,13 @@
-"use client"
+"use client";
 import Image from "next/image";
 import { ReactNode } from "react";
 import { Search } from "./Search";
 import { AddBookmarkButton } from "./AddBookmark";
+import { useTagsStore } from "../stores/useTagsStore";
 
 export const Navbar = ({ children }: { children: ReactNode }) => {
+  const tags = useTagsStore((state) => state.tags);
+
   return (
     <div className="drawer lg:drawer-open">
       <input id="sidebar-drawer" type="checkbox" className="drawer-toggle" />
@@ -84,6 +87,21 @@ export const Navbar = ({ children }: { children: ReactNode }) => {
               Archived
             </button>
           </li>
+          <li
+            className="menu-title text-base-content menu-disabled
+          "
+          >
+            <h1>Tags</h1>
+          </li>
+          {tags.map((tags) => (
+            <li key={tags.title}>
+              <div className="flex justify-between w-full">
+              <input id={tags.title} type="checkbox" className="checkbox" />
+              <label htmlFor={tags.title}>{tags.title}</label>
+              </div>
+            </li>
+          ))}
+          <li></li>
         </ul>
       </div>
     </div>
