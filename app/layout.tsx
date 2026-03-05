@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Navbar } from "./components/Navbar";
+import { Providers } from "./components/Providers";
+import { AuthenticationWrapper } from "./components/AuthenticationWrapper";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,7 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <Providers>
+      <AuthenticationWrapper>
       <html lang="en" data-theme="mytheme">
         <body className={`antialiased bg-base-200`}>
           <Navbar>
@@ -22,6 +25,7 @@ export default function RootLayout({
           </Navbar>
         </body>
       </html>
-    </ClerkProvider>
+      </AuthenticationWrapper>
+    </Providers>
   );
 }

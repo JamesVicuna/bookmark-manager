@@ -18,10 +18,11 @@ export type Bookmark = {
 export type BookmarkInsert = Pick<Bookmark, "user_id" | "title" | "url" | "favicon" | "description">
 
 export type Tag = {
-   id?: string,
+   id: string,
    user_id?: string,
    title: string,
-   created_at?: string
+   created_at?: string,
+   count?: number
 }
 
 export type TagInsert = Pick<Tag, "title">

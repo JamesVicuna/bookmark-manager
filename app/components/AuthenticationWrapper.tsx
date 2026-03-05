@@ -11,13 +11,15 @@ export const AuthenticationWrapper = ({
   const { isSignedIn } = useAuth();
   const fetchTags = useTagsStore((state) => state.fetchTags);
   const clearTags = useTagsStore((state) => state.clearTags);
+  const clearFilteredTags = useTagsStore((state) => state.clearFilteredTags)
 
   useEffect(() => {
     if (isSignedIn) {
       fetchTags();
     } else {
       clearTags();
+      clearFilteredTags();
     }
-  }, [isSignedIn, fetchTags, clearTags]);
+  }, [isSignedIn, fetchTags, clearTags, clearFilteredTags]);
   return <>{children}</>;
 };

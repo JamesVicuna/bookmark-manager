@@ -63,11 +63,18 @@ export class BookmarkService {
   }
 
   async getAllTags(): Promise<Tag[]> {
-    const { data, error } = await this.supabase.from("tags").select("*");
+    const { data, error } = await this.supabase
+      .from("tags")
+      .select("*, bookmark_tags(count)");
+
+    const tags = data?.map((tag) => ({
+      ...tag,
+      count: tag.bookmark_tags[0].count,
+    }));
 
     if (error) throw new DatabaseError(error.message);
 
-    return data as Tag[];
+    return tags as Tag[];
   }
 
   async deleteTag(id: string) {
@@ -110,12 +117,11 @@ export class BookmarkService {
 
     if (error) return new DatabaseError(error.message);
 
-    
-    return data.map(bookmark => ({
+    return data.map((bookmark) => ({
       ...this.mapBookmarkFromDatbase(bookmark),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      tags: bookmark.bookmark_tags.map((bookmark_tag: any) => bookmark_tag.tag)
-    }))
+      tags: bookmark.bookmark_tags.map((bookmark_tag: any) => bookmark_tag.tag),
+    }));
   }
 
   async getAllBookmarks(): Promise<Bookmark[]> {

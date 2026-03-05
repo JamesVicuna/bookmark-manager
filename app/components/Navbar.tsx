@@ -7,6 +7,11 @@ import { useTagsStore } from "../stores/useTagsStore";
 
 export const Navbar = ({ children }: { children: ReactNode }) => {
   const tags = useTagsStore((state) => state.tags);
+  const filteredTags = useTagsStore((state) => state.filteredTags);
+  const toggleFilteredTag = useTagsStore((state) => state.toggleFilteredTag);
+  const clearFilteredTags = useTagsStore((state) => state.clearFilteredTags);
+  console.log("filtered tags here");
+  console.log(filteredTags);
 
   return (
     <div className="drawer lg:drawer-open">
@@ -87,21 +92,43 @@ export const Navbar = ({ children }: { children: ReactNode }) => {
               Archived
             </button>
           </li>
-          <li
-            className="menu-title text-base-content menu-disabled
-          "
-          >
-            <h1>Tags</h1>
-          </li>
-          {tags.map((tags) => (
-            <li key={tags.title}>
-              <div className="flex justify-between w-full">
-              <input id={tags.title} type="checkbox" className="checkbox" />
-              <label htmlFor={tags.title}>{tags.title}</label>
+          <div className="flex justify-between p-3">
+            <li className="menu-title text-base-content menu-disabled p-0">
+              <div className="flex w-full justify-between">
+                <h1>Tags</h1>
               </div>
             </li>
+            <button
+              className="underline cursor-pointer "
+              onClick={clearFilteredTags}
+            >
+              Reset
+            </button>
+          </div>
+          {tags.map((tag) => (
+            <li key={tag.title} className="">
+              <label
+                htmlFor={tag.title}
+                className="flex justify-between w-full cursor-pointer"
+              >
+                <div className="flex gap-2">
+                  <input
+                    id={tag.title}
+                    type="checkbox"
+                    checked={filteredTags.some((t) => t.id === tag.id)}
+                    onChange={() => toggleFilteredTag(tag)}
+                    className="checkbox text-base-100 [--input-color:var(--color-primary)] checkbox-sm rounded-md"
+                  />
+                  <span className=" text-base-800 ">{tag.title}</span>
+                </div>
+                <div>
+                  <span className="badge badge-sm badge-accent rounded-full p-2">
+                    {tag.count || 0}
+                  </span>
+                </div>
+              </label>
+            </li>
           ))}
-          <li></li>
         </ul>
       </div>
     </div>
