@@ -10,8 +10,6 @@ export const Navbar = ({ children }: { children: ReactNode }) => {
   const filteredTags = useTagsStore((state) => state.filteredTags);
   const toggleFilteredTag = useTagsStore((state) => state.toggleFilteredTag);
   const clearFilteredTags = useTagsStore((state) => state.clearFilteredTags);
-  console.log("filtered tags here");
-  console.log(filteredTags);
 
   return (
     <div className="drawer lg:drawer-open">
