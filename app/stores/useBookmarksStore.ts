@@ -5,6 +5,7 @@ import { create } from "zustand";
 interface BookmarksState {
   bookmarks: Bookmark[];
   fetchBookmarks: () => Promise<void>;
+  clearBookmarks: () => void;
 }
 
 export const useBookmarksStore = create<BookmarksState>((set) => ({
@@ -17,7 +18,10 @@ export const useBookmarksStore = create<BookmarksState>((set) => ({
 
       set({ bookmarks: bookmarks });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
+  },
+  clearBookmarks: () => {
+    set({ bookmarks: [] });
   },
 }));
