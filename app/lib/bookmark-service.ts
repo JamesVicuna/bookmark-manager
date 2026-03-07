@@ -35,6 +35,8 @@ export class BookmarkService {
     bookmark: BookmarkInsert,
     tags?: Tag[],
   ): Promise<Bookmark> {
+    console.log("========bookmark insert here=====")
+    console.log(bookmark)
     const { data, error } = await this.supabase
       .from("bookmarks")
       .insert(bookmark)
@@ -144,7 +146,7 @@ export class BookmarkService {
     if (error) throw new DatabaseError(error.message);
   }
 
-  async postBookmarkTags(bookmarkId: string[], tags: Tag[]) {
+  async postBookmarkTags(bookmarkId: string, tags: Tag[]) {
     const { error } = await this.supabase.from("bookmark_tags").insert(
       tags.map((tag) => ({
         tag_id: tag.id,

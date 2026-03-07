@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
       bookmarkInsert,
       tags,
     }: { bookmarkInsert: BookmarkInsert; tags: Tag[] } = await req.json();
+    console.log(bookmarkInsert)
 
     const bookmark = await bookmarkService.createBookmark(bookmarkInsert, tags);
 

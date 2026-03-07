@@ -1,9 +1,15 @@
 import { ReactNode } from "react";
 import Image from "next/image";
 
-export const Modal = ({ children }: { children: ReactNode }) => {
+export const Modal = ({
+  children,
+  id,
+}: {
+  children: ReactNode;
+  id: string;
+}) => {
   return (
-    <dialog id="modal" className="modal">
+    <dialog id={id} className="modal">
       <div className="modal-box relative">
         {children}
         <div className="modal-action m-0"></div>

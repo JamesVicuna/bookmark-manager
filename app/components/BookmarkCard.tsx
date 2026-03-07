@@ -2,6 +2,9 @@
 import Image from "next/image";
 import { Bookmark } from "../types/bookmarks";
 import { useBookmarksStore, BookmarksState } from "../stores/useBookmarksStore";
+import { EditBookmarkButton } from "./EditBookmark";
+import { openModal } from "../utils/modal";
+import { ModalState, useModalStore } from "../stores/useModalStore";
 
 type DropdownItem<T> = {
   title: string | ((context: T) => string);
@@ -11,6 +14,7 @@ type DropdownItem<T> = {
 const dropdownItems: DropdownItem<{
   bookmark: Bookmark;
   updateBookmark: BookmarksState["updateBookmark"];
+  openEditModal: ModalState["openEditModal"]
 }>[] = [
   {
     title: "Vist",
@@ -46,9 +50,11 @@ const dropdownItems: DropdownItem<{
   {
     title: "Edit",
     svg: "/images/icon-edit.svg",
-    onClick: ({ bookmark }) => {
+    onClick: ({ bookmark, openEditModal }) => {
       // Open up the edit bookmark modal and send a query to the database to update
       // TODO - after creating the edit bookmark modal edit this
+      openEditModal(bookmark)
+      openModal("edit")
     },
   },
   {
@@ -66,10 +72,11 @@ const dropdownItems: DropdownItem<{
 
 export const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
   const updateBookmark = useBookmarksStore((state) => state.updateBookmark);
-
+  const openEditModal = useModalStore((state) => state.openEditModal)
   const context = {
     bookmark,
     updateBookmark,
+    openEditModal
   };
 
   return (
@@ -190,6 +197,7 @@ export const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
           {bookmark.is_archived ?? <span className="badge">Archived</span>}
         </div>
       </div>
+      
     </div>
   );
 };

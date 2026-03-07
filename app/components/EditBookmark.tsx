@@ -1,21 +1,26 @@
 "use client";
 import { openModal } from "../utils/modal";
 import { Modal } from "./Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useBookmarksStore } from "../stores/useBookmarksStore";
-import { BookmarkInsert, Tag } from "../types/bookmarks";
+import { Bookmark, BookmarkInsert, Tag } from "../types/bookmarks";
 import { useTagsStore } from "../stores/useTagsStore";
+import { useModalStore } from "../stores/useModalStore";
 
-export const AddBookmarkButton = () => {
+export const EditBookmarkButton = () => {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [url, setUrl] = useState<string>("");
-  // const [tags, setTags] = useState(["React", "java", "typescript"]);
+  const { editBookmark, closeEditModal } = useModalStore();
   const tags = useTagsStore((state) => state.tags);
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
-  const addBookmark = useBookmarksStore((state) => state.addBookmark);
-  console.log(selectedTags)
+
+  const [selectedTags, setSelectedTags] = useState<Tag[]>(
+    editBookmark?.tags ?? [],
+  );
+  const updateBookmark = useBookmarksStore((state) => state.updateBookmark);
+  console.log("Selected tags here for edit");
+  console.log(selectedTags);
 
   const toggleSelectedTags = (tag: Tag) => {
     const updatedTags = selectedTags.some((t) => t.id === tag.id)
@@ -25,33 +30,28 @@ export const AddBookmarkButton = () => {
     setSelectedTags(updatedTags);
   };
 
-  const handleAddBookmark = async () => {
-    const bookmarkInsert: BookmarkInsert = {
+  const handleEditBookmark = async () => {
+    if (!editBookmark) return;
+    const edits: BookmarkInsert = {
       title: "Bookmark Insert Test",
       url: "/testing",
       description: "Testing for the bookmark insert",
       favicon: "/hellogovna",
     };
 
-    await addBookmark(bookmarkInsert, selectedTags)
+    await updateBookmark(editBookmark.id, edits);
   };
   return (
     <div>
-      <button
-        className="btn btn-primary text-primary-content rounded-lg"
-        onClick={() => openModal("add")}
-      >
-        + Add Bookmark
-      </button>
-      <Modal id="add">
+      <Modal id="edit">
         <div className="flex flex-col">
           <div className="mb-4">
             <h1 className=" font-semibold text-2xl text-black mb-0.5">
-              Add a bookmark
+              Edit bookmark
             </h1>
             <p className="text-sm">
-              Save a link with details to keep your collection organized. We
-              extract the favicon automatically from the URL.
+              Update your saved link details - change teh title, descripition,
+              URL, or tags anytime.
             </p>
           </div>
           <label htmlFor="title" className="mb-1">
@@ -114,11 +114,19 @@ export const AddBookmarkButton = () => {
         <div className="flex flex-col items-end">
           <div className="flex gap-4">
             <form method="dialog">
-              <button className="btn bg-base-100 border-base-300 border-2 font-semibold text-base-900 rounded-lg">
+              <button
+                className="btn bg-base-100 border-base-300 border-2 font-semibold text-base-900 rounded-lg"
+                onClick={closeEditModal}
+              >
                 Cancel
               </button>
             </form>
-            <button className="btn btn-primary rounded-lg" onClick={handleAddBookmark}>Add Bookmark</button>
+            <button
+              className="btn btn-primary rounded-lg"
+              onClick={handleEditBookmark}
+            >
+              Save Bookmark
+            </button>
           </div>
         </div>
       </Modal>

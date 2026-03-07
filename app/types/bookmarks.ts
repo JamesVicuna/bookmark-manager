@@ -15,7 +15,7 @@ export type Bookmark = {
    tags?: Tag[]
 }
 
-export type BookmarkInsert = Pick<Bookmark, "user_id" | "title" | "url" | "favicon" | "description">
+export type BookmarkInsert = Pick<Bookmark, "title" | "url" | "favicon" | "description">
 
 export type Tag = {
    id: string,

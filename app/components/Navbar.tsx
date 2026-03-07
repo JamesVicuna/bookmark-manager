@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { Search } from "./Search";
 import { AddBookmarkButton } from "./AddBookmark";
 import { useTagsStore } from "../stores/useTagsStore";
+import { EditBookmarkButton } from "./EditBookmark";
 
 export const Navbar = ({ children }: { children: ReactNode }) => {
   const tags = useTagsStore((state) => state.tags);
@@ -129,6 +130,7 @@ export const Navbar = ({ children }: { children: ReactNode }) => {
           ))}
         </ul>
       </div>
+    
     </div>
   );
 };

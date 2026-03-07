@@ -1,10 +1,12 @@
 import axios from "axios";
-import { Bookmark } from "../types/bookmarks";
+import { Bookmark, BookmarkInsert, Tag } from "../types/bookmarks";
 import { create } from "zustand";
+import { useTagsStore } from "./useTagsStore";
 
 export interface BookmarksState {
   bookmarks: Bookmark[];
   fetchBookmarks: () => Promise<void>;
+  addBookmark: (bookmarkInsert: BookmarkInsert, tags: Tag[]) => Promise<void>
   updateBookmark: (id: string, updates: Partial<Bookmark>) => Promise<void>;
   clearBookmarks: () => void;
 }
@@ -20,6 +22,18 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
       set({ bookmarks: bookmarks });
     } catch (error) {
       console.log(error);
+    }
+  },
+  addBookmark: async (bookmarkInsert, tags) => {
+    try {
+      console.log(bookmarkInsert)
+      await axios.post("/api/bookmarks", {bookmarkInsert, tags})
+      const fetchBookmarks = get().fetchBookmarks;
+      await fetchBookmarks()
+      await useTagsStore.getState().fetchTags()
+    } catch (error) {
+      console.log(error)
+      console.error("error uploading bookmark")
     }
   },
   updateBookmark: async (id, updates) => {

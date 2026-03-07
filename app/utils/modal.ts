@@ -1,5 +1,5 @@
-export const openModal = () => {
-  const element = document.getElementById('modal');
+export const openModal = (id: string) => {
+  const element = document.getElementById(id);
 
   if (element instanceof HTMLDialogElement) {
     element.showModal();
