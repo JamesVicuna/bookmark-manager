@@ -5,6 +5,7 @@ import { Search } from "./Search";
 import { AddBookmarkButton } from "./AddBookmark";
 import { useTagsStore } from "../stores/useTagsStore";
 import { EditBookmarkButton } from "./EditBookmark";
+import { openModal } from "../utils/modal";
 
 export const Navbar = ({ children }: { children: ReactNode }) => {
   const tags = useTagsStore((state) => state.tags);
@@ -47,7 +48,13 @@ export const Navbar = ({ children }: { children: ReactNode }) => {
 
             {/* Navbar Right Side */}
             <div>
-              <AddBookmarkButton />
+              {/* <AddBookmarkButton /> */}
+              <button
+                className="btn btn-primary text-primary-content rounded-lg"
+                onClick={() => openModal("add")}
+              >
+                + Add Bookmark
+              </button>
             </div>
           </div>
         </div>
@@ -130,7 +137,7 @@ export const Navbar = ({ children }: { children: ReactNode }) => {
           ))}
         </ul>
       </div>
-    
+      <AddBookmarkButton />
     </div>
   );
 };

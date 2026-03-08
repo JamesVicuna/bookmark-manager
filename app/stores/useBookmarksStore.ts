@@ -5,14 +5,20 @@ import { useTagsStore } from "./useTagsStore";
 
 export interface BookmarksState {
   bookmarks: Bookmark[];
+  loading: boolean;
   fetchBookmarks: () => Promise<void>;
-  addBookmark: (bookmarkInsert: BookmarkInsert, tags: Tag[]) => Promise<void>
-  updateBookmark: (id: string, updates: Partial<Bookmark>) => Promise<void>;
+  addBookmark: (bookmarkInsert: BookmarkInsert, tags: Tag[]) => Promise<{success: boolean}>;
+  updateBookmark: (
+    id: string,
+    updates: Partial<Bookmark>,
+    tags?: Tag[],
+  ) => Promise<{success: boolean}>;
   clearBookmarks: () => void;
 }
 
 export const useBookmarksStore = create<BookmarksState>((set, get) => ({
   bookmarks: [],
+  loading: false,
   fetchBookmarks: async () => {
     try {
       const res = await axios.get("/api/bookmarks");
@@ -20,30 +26,42 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
       const bookmarks: Bookmark[] = res.data;
 
       set({ bookmarks: bookmarks });
+      
     } catch (error) {
       console.log(error);
+      
     }
   },
   addBookmark: async (bookmarkInsert, tags) => {
+    set({ loading: true });
     try {
-      console.log(bookmarkInsert)
-      await axios.post("/api/bookmarks", {bookmarkInsert, tags})
-      const fetchBookmarks = get().fetchBookmarks;
-      await fetchBookmarks()
-      await useTagsStore.getState().fetchTags()
-    } catch (error) {
-      console.log(error)
-      console.error("error uploading bookmark")
-    }
-  },
-  updateBookmark: async (id, updates) => {
-    try {
-      await axios.patch(`/api/bookmarks/${id}`, { updates });
+      await axios.post("/api/bookmarks", { bookmarkInsert, tags });
       const fetchBookmarks = get().fetchBookmarks;
       await fetchBookmarks();
+      await useTagsStore.getState().fetchTags();
+      return {success: true}
     } catch (error) {
       console.log(error);
-      console.log("Error updating bookmark with edits: ", updates);
+      console.error("error uploading bookmark");
+      return {success: false}
+    } finally {
+      set({ loading: false });
+    }
+  },
+  updateBookmark: async (id, edits, tags) => {
+    set({ loading: true });
+    try {
+      await axios.patch(`/api/bookmarks/${id}`, { edits, tags });
+      const fetchBookmarks = get().fetchBookmarks;
+      await fetchBookmarks();
+      await useTagsStore.getState().fetchTags();
+      return {success: true}
+    } catch (error) {
+      console.log(error);
+      console.log("Error updating bookmark with edits: ", edits);
+      return {success: false}
+    } finally {
+      set({ loading: false });
     }
   },
   clearBookmarks: () => {

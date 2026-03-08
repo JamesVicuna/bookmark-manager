@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handleError } from "@/app/lib/api-response";
 import { getAuthenticatedService } from "@/app/lib/with-service";
-import { Bookmark } from "@/app/types/bookmarks";
+import { Bookmark, Tag } from "@/app/types/bookmarks";
 
 export async function GET(
   _request: NextRequest,
@@ -26,9 +26,35 @@ export async function PATCH(
   try {
     const { bookmarkService } = await getAuthenticatedService();
     const { id } = await params;
-    const data: Omit<Partial<Bookmark>, "created_at" | "user_id" | "id" | "visit_count"> = await request.json();
+    // const data: Omit<
+    //   Partial<Bookmark>,
+    //   "created_at" | "user_id" | "id" | "visit_count"
+    // > = await request.json();
 
-    const bookmark = await bookmarkService.editBookmark(id, data);
+    const {
+      edits,
+      tags,
+    }: {
+      edits: Omit<
+        Partial<Bookmark>,
+        "created_at" | "user_id" | "id" | "visit_count"
+      >;
+      tags: Tag[];
+    } = await request.json();
+    // const bookmark = await bookmarkService.editBookmarkWithTags(
+    //   id,
+    //   edits,
+    //   tags,
+    // );
+
+    const bookmark = await bookmarkService.editBookmark(id, edits);
+
+    if (tags !== undefined) {
+      await bookmarkService.deleteBookmarkTags(id);
+      if (tags.length > 0) {
+        await bookmarkService.postBookmarkTags(id, tags);
+      }
+    }
 
     return NextResponse.json(bookmark);
   } catch (error) {

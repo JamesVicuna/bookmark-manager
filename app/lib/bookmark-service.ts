@@ -35,8 +35,6 @@ export class BookmarkService {
     bookmark: BookmarkInsert,
     tags?: Tag[],
   ): Promise<Bookmark> {
-    console.log("========bookmark insert here=====")
-    console.log(bookmark)
     const { data, error } = await this.supabase
       .from("bookmarks")
       .insert(bookmark)
@@ -157,6 +155,15 @@ export class BookmarkService {
     if (error) throw new DatabaseError(error.message);
   }
 
+  async deleteBookmarkTags(bookmarkId: string) {
+    const { error } = await this.supabase
+      .from("bookmark_tags")
+      .delete()
+      .eq("bookmark_id", bookmarkId);
+
+    if (error) throw new DatabaseError(error.message);
+  }
+
   async editBookmark(id: string, edits: Partial<Bookmark>): Promise<Bookmark> {
     const { data, error } = await this.supabase
       .from("bookmarks")
@@ -168,6 +175,17 @@ export class BookmarkService {
     if (error) throw new DatabaseError(error.message);
 
     return data as Bookmark;
+  }
+
+  async editBookmarkWithTags(
+    id: string,
+    edits: Partial<Bookmark>,
+    tags: Tag[],
+  ) {
+    const bookmark = await this.editBookmark(id, edits);
+    await this.deleteBookmarkTags(id);
+    await this.postBookmarkTags(id, tags);
+    return bookmark;
   }
 
   async deleteBookmark(bookmarkId: string) {

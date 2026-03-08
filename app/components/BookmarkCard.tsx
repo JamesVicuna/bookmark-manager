@@ -14,7 +14,7 @@ type DropdownItem<T> = {
 const dropdownItems: DropdownItem<{
   bookmark: Bookmark;
   updateBookmark: BookmarksState["updateBookmark"];
-  openEditModal: ModalState["openEditModal"]
+  openEditModal: ModalState["openEditModal"];
 }>[] = [
   {
     title: "Vist",
@@ -37,7 +37,7 @@ const dropdownItems: DropdownItem<{
     },
   },
   {
-    title: ({ bookmark }) => (bookmark.pinned ? "Pin" : "Unpin"),
+    title: ({ bookmark }) => (bookmark.pinned ? "Unpin" : "Pin"),
     svg: "/images/icon-unpin.svg",
     onClick: async ({ bookmark, updateBookmark }) => {
       // Set a query to database to pin / unpin
@@ -53,8 +53,12 @@ const dropdownItems: DropdownItem<{
     onClick: ({ bookmark, openEditModal }) => {
       // Open up the edit bookmark modal and send a query to the database to update
       // TODO - after creating the edit bookmark modal edit this
-      openEditModal(bookmark)
-      openModal("edit")
+      // if (document.activeElement instanceof HTMLElement) {
+      //   document.activeElement.blur();
+      // }
+      // requestAnimationFrame(() => {
+        openEditModal(bookmark);
+      // });
     },
   },
   {
@@ -72,11 +76,11 @@ const dropdownItems: DropdownItem<{
 
 export const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
   const updateBookmark = useBookmarksStore((state) => state.updateBookmark);
-  const openEditModal = useModalStore((state) => state.openEditModal)
+  const openEditModal = useModalStore((state) => state.openEditModal);
   const context = {
     bookmark,
     updateBookmark,
-    openEditModal
+    openEditModal,
   };
 
   return (
@@ -197,7 +201,6 @@ export const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
           {bookmark.is_archived ?? <span className="badge">Archived</span>}
         </div>
       </div>
-      
     </div>
   );
 };

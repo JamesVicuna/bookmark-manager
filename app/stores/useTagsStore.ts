@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { Tag } from "../types/bookmarks";
 import axios from "axios";
+import { Tag } from "../types/bookmarks";
 
 interface TagsState {
   tags: Tag[];
