@@ -10,6 +10,7 @@ import {
   ActionBookmarkModal,
   ActionBookmarkProps,
 } from "./ActionBookmarkModal";
+import { toast } from "react-hot-toast";
 
 export const EditBookmarkButton = () => {
   // Stores
@@ -29,15 +30,19 @@ export const EditBookmarkButton = () => {
     description,
     selectedTags,
   }) => {
-    if (!editBookmark) return {success: false};
-    if (!title || !url || !description) return {success: false};
+    if (!editBookmark) throw new Error();
+    if (!title || !url || !description) throw new Error();
     const edits: BookmarkInsert = {
       title,
       url,
       description,
     };
 
-    return await updateBookmark(editBookmark.id, edits, selectedTags);
+    toast.promise(updateBookmark(editBookmark.id, edits, selectedTags), {
+      loading: "Editing...",
+      success: "Updated!",
+      error: "Error updating bookmark...",
+    });
   };
 
   return (

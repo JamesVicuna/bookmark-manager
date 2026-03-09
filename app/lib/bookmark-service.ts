@@ -1,4 +1,4 @@
-import { Bookmark, BookmarkInsert, Tag, TagInsert } from "../types/bookmarks";
+import { Bookmark, BookmarkInsert, BookmarkTag, Tag, TagInsert } from "../types/bookmarks";
 import { DatabaseError } from "./errors";
 import { createSupabaseClient } from "./supabase";
 import { type SupabaseClient } from "@supabase/supabase-js";
@@ -27,7 +27,7 @@ export class BookmarkService {
       is_archived: data.is_archived,
       visit_count: data.visit_count,
       created_at: data.created_at,
-      last_visited: data.visited_at,
+      last_visited: data.last_visited,
     };
   }
 
@@ -142,6 +142,8 @@ export class BookmarkService {
       .eq("bookmark_id", bookmarkId);
 
     if (error) throw new DatabaseError(error.message);
+
+    return data as BookmarkTag[]
   }
 
   async postBookmarkTags(bookmarkId: string, tags: Tag[]) {

@@ -4,14 +4,16 @@ import { ReactNode } from "react";
 import { Search } from "./Search";
 import { AddBookmarkButton } from "./AddBookmark";
 import { useTagsStore } from "../stores/useTagsStore";
-import { EditBookmarkButton } from "./EditBookmark";
 import { openModal } from "../utils/modal";
+import { usePageStore, Pages } from "../stores/usePageStore";
+import { SignedOut, SignInButton } from "@clerk/nextjs";
 
 export const Navbar = ({ children }: { children: ReactNode }) => {
   const tags = useTagsStore((state) => state.tags);
   const filteredTags = useTagsStore((state) => state.filteredTags);
   const toggleFilteredTag = useTagsStore((state) => state.toggleFilteredTag);
   const clearFilteredTags = useTagsStore((state) => state.clearFilteredTags);
+  const { page, setPage } = usePageStore();
 
   return (
     <div className="drawer lg:drawer-open">
@@ -47,7 +49,7 @@ export const Navbar = ({ children }: { children: ReactNode }) => {
             </div>
 
             {/* Navbar Right Side */}
-            <div>
+            <div className="flex gap-2">
               {/* <AddBookmarkButton /> */}
               <button
                 className="btn btn-primary text-primary-content rounded-lg"
@@ -55,6 +57,11 @@ export const Navbar = ({ children }: { children: ReactNode }) => {
               >
                 + Add Bookmark
               </button>
+              <SignedOut>
+                <button className="btn btn-primary">
+                  <SignInButton />
+                </button>
+              </SignedOut>
             </div>
           </div>
         </div>
@@ -75,7 +82,7 @@ export const Navbar = ({ children }: { children: ReactNode }) => {
             className="py-2 mb-2"
           />
           <li>
-            <button>
+            <button onClick={() => setPage(Pages.ALL)}>
               <Image
                 src={"/images/icon-home.svg"}
                 className=" h-full w-auto mr-0.5"
@@ -86,8 +93,10 @@ export const Navbar = ({ children }: { children: ReactNode }) => {
               Home
             </button>
           </li>
-          <li>
-            <button>
+          <li
+            className={`${page === Pages.ARCHIVED && "menu-active text-base-content"}`}
+          >
+            <button onClick={() => setPage(Pages.ARCHIVED)}>
               <Image
                 src={"/images/icon-archive.svg"}
                 className=" h-full w-auto mr-0.5"

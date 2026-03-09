@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
 import { Navbar } from "./components/Navbar";
 import { Providers } from "./components/Providers";
 import { AuthenticationWrapper } from "./components/AuthenticationWrapper";
@@ -18,13 +17,15 @@ export default function RootLayout({
   return (
     <Providers>
       <AuthenticationWrapper>
-      <html lang="en" data-theme="mytheme">
-        <body className={`antialiased bg-base-200`}>
-          <Navbar>
-            <div className="mx-8 mt-8">{children}</div>
-          </Navbar>
-        </body>
-      </html>
+        <html lang="en" data-theme="mytheme">
+          <body className={`antialiased bg-base-200`}>
+            <Navbar>
+              <div className="mx-8 mt-8">
+                {children}
+              </div>
+            </Navbar>
+          </body>
+        </html>
       </AuthenticationWrapper>
     </Providers>
   );

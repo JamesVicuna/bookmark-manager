@@ -5,6 +5,7 @@ import {
   ActionBookmarkModal,
   ActionBookmarkProps,
 } from "./ActionBookmarkModal";
+import { toast } from "react-hot-toast";
 
 export const AddBookmarkButton = () => {
   const { addBookmark, loading } = useBookmarksStore();
@@ -21,7 +22,11 @@ export const AddBookmarkButton = () => {
       description,
     };
 
-    return await addBookmark(bookmarkInsert, selectedTags);
+    toast.promise(addBookmark(bookmarkInsert, selectedTags), {
+      loading: "Adding...",
+      success: "Bookmark Added!",
+      error: "Error adding bookmark...",
+    });
   };
 
   return (

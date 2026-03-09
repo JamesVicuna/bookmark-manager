@@ -58,7 +58,7 @@ export async function PATCH(
 
     return NextResponse.json(bookmark);
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 }
 
@@ -71,7 +71,8 @@ export async function DELETE(
     const { id } = await params;
 
     await bookmarkService.deleteBookmark(id);
+    return NextResponse.json({success: true})
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 }

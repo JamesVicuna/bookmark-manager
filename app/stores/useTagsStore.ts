@@ -35,6 +35,7 @@ export const useTagsStore = create<TagsState>((set) => ({
       const tags: Tag[] = res.data;
       set({ tags, isLoading: false });
     } catch (err) {
+      console.log(err)
       set({ error: "Error fetching tags", isLoading: false });
     }
   },

@@ -7,13 +7,14 @@ export interface BookmarksState {
   bookmarks: Bookmark[];
   loading: boolean;
   fetchBookmarks: () => Promise<void>;
-  addBookmark: (bookmarkInsert: BookmarkInsert, tags: Tag[]) => Promise<{success: boolean}>;
+  addBookmark: (bookmarkInsert: BookmarkInsert, tags: Tag[]) => Promise<void>;
   updateBookmark: (
     id: string,
     updates: Partial<Bookmark>,
     tags?: Tag[],
-  ) => Promise<{success: boolean}>;
+  ) => Promise<void>;
   clearBookmarks: () => void;
+  deleteBookmark: (id: string) => Promise<void>;
 }
 
 export const useBookmarksStore = create<BookmarksState>((set, get) => ({
@@ -26,10 +27,8 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
       const bookmarks: Bookmark[] = res.data;
 
       set({ bookmarks: bookmarks });
-      
     } catch (error) {
       console.log(error);
-      
     }
   },
   addBookmark: async (bookmarkInsert, tags) => {
@@ -39,11 +38,10 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
       const fetchBookmarks = get().fetchBookmarks;
       await fetchBookmarks();
       await useTagsStore.getState().fetchTags();
-      return {success: true}
     } catch (error) {
       console.log(error);
       console.error("error uploading bookmark");
-      return {success: false}
+      throw new Error("Error adding bookmark");
     } finally {
       set({ loading: false });
     }
@@ -53,18 +51,32 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
     try {
       await axios.patch(`/api/bookmarks/${id}`, { edits, tags });
       const fetchBookmarks = get().fetchBookmarks;
+      // fectching bookmarks
+      console.log("fetching bookmarks");
       await fetchBookmarks();
       await useTagsStore.getState().fetchTags();
-      return {success: true}
     } catch (error) {
       console.log(error);
       console.log("Error updating bookmark with edits: ", edits);
-      return {success: false}
+      throw new Error("Error updating bookmarks with edits");
     } finally {
       set({ loading: false });
     }
   },
   clearBookmarks: () => {
     set({ bookmarks: [] });
+  },
+  deleteBookmark: async (id) => {
+    try {
+      await axios.delete(`/api/bookmarks/${id}`);
+      const fetchBookmarks = get().fetchBookmarks;
+      // fectching bookmarks
+      console.log("fetching bookmarks");
+      await fetchBookmarks();
+      await useTagsStore.getState().fetchTags();
+    } catch (error) {
+      console.log(error);
+      throw new Error("Error deleting bookmark");
+    }
   },
 }));
