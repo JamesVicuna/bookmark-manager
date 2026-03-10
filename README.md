@@ -1,6 +1,7 @@
 ## Bookmark Manager
 
-Features
+### Features
+
 🔖 Save Bookmarks – Store links with titles, descriptions, and favicons
 
 📌 Pin Important Links – Keep frequently used bookmarks at the top

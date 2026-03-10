@@ -8,17 +8,19 @@ import { useModalStore } from "./stores/useModalStore";
 import { usePageStore, Pages } from "./stores/usePageStore";
 import { ToasterHub } from "./components/Toaster";
 import { useFiltersStore } from "./stores/useFilterStore";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 
 export default function Home() {
   const filteredTags = useFiltersStore((state) => state.filteredTags);
   const { bookmarks, initialLoading } = useBookmarksStore();
   const editBookmark = useModalStore((state) => state.editBookmark);
   const page = usePageStore((state) => state.page);
-  const searchQuery = useFiltersStore((state) => state.searchQuery)
+  const searchQuery = useFiltersStore((state) => state.searchQuery);
   const titles: Record<Pages, string> = {
     [Pages.ALL]: "All Bookmarks",
     [Pages.ARCHIVED]: "Archived",
   };
+
   const title = titles[page];
 
   const filteredBookmarks = useMemo(() => {
@@ -35,7 +37,7 @@ export default function Home() {
       default:
         break;
     }
-    
+
     // 2. Tag Filter
     if (filteredTags.length > 0) {
       result = result.filter((bookmark) =>
@@ -47,14 +49,11 @@ export default function Home() {
 
     // 3. Search Filter
     if (searchQuery.trim()) {
-    const normalized = searchQuery.toLowerCase();
-    result = result.filter((b) =>
-      b.title.toLowerCase().includes(normalized),
-    );
-  }
-    
+      const normalized = searchQuery.toLowerCase();
+      result = result.filter((b) => b.title.toLowerCase().includes(normalized));
+    }
 
-    return result
+    return result;
   }, [bookmarks, filteredTags, page, searchQuery]);
 
   return (
@@ -71,13 +70,17 @@ export default function Home() {
           title
         )}
       </h1>
-      {initialLoading && (
-        <span className=" loading loading-dots loading-xl"></span>
-      )}
-
+      <SignedIn>
+        {initialLoading && (
+          <span className=" loading loading-dots loading-xl"></span>
+        )}
+      </SignedIn>
+      <SignedOut>
+        <h2 className="text-xl text-base-800">Sign in to get started!</h2>
+      </SignedOut>
       <div className="flex flex-col gap-4 ">
         <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* <div className="flex flex-wrap gap-4"> */}
+          {/* <div className="flex flex-wrap gap-4"> */}
           {filteredBookmarks.map((bookmark) => (
             <BookmarkCard key={bookmark.id} bookmark={bookmark} />
           ))}
