@@ -6,6 +6,7 @@ import { useTagsStore } from "./useTagsStore";
 export interface BookmarksState {
   bookmarks: Bookmark[];
   loading: boolean;
+  initialLoading: boolean;
   fetchBookmarks: () => Promise<void>;
   addBookmark: (bookmarkInsert: BookmarkInsert, tags: Tag[]) => Promise<void>;
   updateBookmark: (
@@ -20,7 +21,9 @@ export interface BookmarksState {
 export const useBookmarksStore = create<BookmarksState>((set, get) => ({
   bookmarks: [],
   loading: false,
+  initialLoading: true,
   fetchBookmarks: async () => {
+    set({loading: true})
     try {
       const res = await axios.get("/api/bookmarks");
 
@@ -29,6 +32,9 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
       set({ bookmarks: bookmarks });
     } catch (error) {
       console.log(error);
+    } finally {
+      set({loading: false, initialLoading: false})
+      
     }
   },
   addBookmark: async (bookmarkInsert, tags) => {

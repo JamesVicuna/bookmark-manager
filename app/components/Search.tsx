@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
+import { useFiltersStore } from "../stores/useFilterStore";
 
 export const Search = () => {
-  const [search, setSearch] = useState<string>("");
+  const {searchQuery, setSearchQuery} = useFiltersStore()
 
   return (
     <label className="input max-w-80 w-full outline-none">
@@ -26,8 +27,8 @@ export const Search = () => {
         type="search"
         className="grow"
         placeholder="Search by title"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
       />
     </label>
   );

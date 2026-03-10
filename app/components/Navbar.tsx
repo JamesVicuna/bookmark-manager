@@ -6,13 +6,13 @@ import { AddBookmarkButton } from "./AddBookmark";
 import { useTagsStore } from "../stores/useTagsStore";
 import { openModal } from "../utils/modal";
 import { usePageStore, Pages } from "../stores/usePageStore";
-import { SignedOut, SignInButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { useFiltersStore } from "../stores/useFilterStore";
 
 export const Navbar = ({ children }: { children: ReactNode }) => {
   const tags = useTagsStore((state) => state.tags);
-  const filteredTags = useTagsStore((state) => state.filteredTags);
-  const toggleFilteredTag = useTagsStore((state) => state.toggleFilteredTag);
-  const clearFilteredTags = useTagsStore((state) => state.clearFilteredTags);
+  const { filteredTags, toggleFilteredTag, clearFilteredTags } =
+    useFiltersStore();
   const { page, setPage } = usePageStore();
 
   return (
@@ -62,6 +62,15 @@ export const Navbar = ({ children }: { children: ReactNode }) => {
                   <SignInButton />
                 </button>
               </SignedOut>
+              <SignedIn>
+                <div className="flex flex-col justify-center">
+                  <UserButton
+                    appearance={{
+                      elements: {},
+                    }}
+                  />
+                </div>
+              </SignedIn>
             </div>
           </div>
         </div>

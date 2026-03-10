@@ -113,7 +113,7 @@ export const BookmarkCard = memo(({ bookmark }: { bookmark: Bookmark }) => {
   };
 
   return (
-    <div className="card bg-base-100 min-w-84.5">
+    <div className="card bg-base-100 ">
       <div id="header+body" className="p-4">
         <div id="header" className="flex border-b border-b-base-300 pb-4 gap-4">
           <Favicon url={bookmark.url} key={bookmark.url} />

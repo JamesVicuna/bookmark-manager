@@ -3,6 +3,7 @@ import { ReactNode, useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useTagsStore } from "../stores/useTagsStore";
 import { useBookmarksStore } from "../stores/useBookmarksStore";
+import { useFiltersStore } from "../stores/useFilterStore";
 
 export const AuthenticationWrapper = ({
   children,
@@ -10,11 +11,9 @@ export const AuthenticationWrapper = ({
   children: ReactNode;
 }) => {
   const { isSignedIn } = useAuth();
-  const fetchTags = useTagsStore((state) => state.fetchTags);
-  const fetchBookmarks = useBookmarksStore((state) => state.fetchBookmarks);
-  const clearTags = useTagsStore((state) => state.clearTags);
-  const clearFilteredTags = useTagsStore((state) => state.clearFilteredTags);
-  const clearBookmarks = useBookmarksStore((state) => state.clearBookmarks);
+  const { fetchTags, clearTags } = useTagsStore();
+  const { fetchBookmarks, clearBookmarks } = useBookmarksStore();
+  const clearFilteredTags = useFiltersStore((state) => state.clearFilteredTags);
 
   useEffect(() => {
     if (isSignedIn) {
@@ -25,6 +24,13 @@ export const AuthenticationWrapper = ({
       clearFilteredTags();
       clearBookmarks();
     }
-  }, [isSignedIn, fetchTags, fetchBookmarks, clearTags, clearFilteredTags, clearBookmarks]);
+  }, [
+    isSignedIn,
+    fetchTags,
+    fetchBookmarks,
+    clearTags,
+    clearFilteredTags,
+    clearBookmarks,
+  ]);
   return <>{children}</>;
 };
