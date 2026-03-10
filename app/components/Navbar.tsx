@@ -58,9 +58,9 @@ export const Navbar = ({ children }: { children: ReactNode }) => {
                 + Add Bookmark
               </button>
               <SignedOut>
-                <button className="btn btn-primary">
-                  <SignInButton />
-                </button>
+                <SignInButton>
+                  <button className="btn btn-primary">Sign In</button>
+                </SignInButton>
               </SignedOut>
               <SignedIn>
                 <div className="flex flex-col justify-center">
