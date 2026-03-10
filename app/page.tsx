@@ -2,7 +2,6 @@
 
 import { BookmarkCard } from "./components/BookmarkCard";
 import { useBookmarksStore } from "./stores/useBookmarksStore";
-import { useTagsStore } from "./stores/useTagsStore";
 import { useMemo } from "react";
 import { EditBookmarkButton } from "./components/EditBookmark";
 import { useModalStore } from "./stores/useModalStore";

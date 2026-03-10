@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { useFiltersStore } from "../stores/useFilterStore";
 
 export const Search = () => {
