@@ -6,7 +6,8 @@ import { AuthenticationWrapper } from "./components/AuthenticationWrapper";
 
 export const metadata: Metadata = {
   title: "Bookmark Manager",
-  description: "Developed by James Vicuna. Assets provided by FrontEndMentor.com",
+  description:
+    "Developed by James Vicuna. Assets provided by FrontEndMentor.com",
 };
 
 export default function RootLayout({
@@ -20,8 +21,8 @@ export default function RootLayout({
         <html lang="en" data-theme="mytheme">
           <body className={`antialiased bg-base-200`}>
             <Navbar>
-              <div className="mx-8 mt-8">
-                {children}
+              <div className="min-h-[calc(100vh-6rem)]">
+                <div className="mx-8 mt-8">{children}</div>
               </div>
             </Navbar>
           </body>
